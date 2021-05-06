@@ -1,0 +1,9 @@
+{
+  "name": "弹幕留言墙",
+  "unique": "barrages",
+  "description": "可以发送弹幕来进行留言",
+  "version": "1.0",
+  "author": "小游",
+  "site": "https://xiaoyou66.com/",
+  "auth": ["router","tools","database","mail"]
+}
