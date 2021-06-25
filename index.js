@@ -2,10 +2,10 @@
 const router =xBlog.router
 const database =xBlog.database
 const tools = xBlog.tools
-const mail = xBlog.mail
+const widget = xBlog.widget
 // 一些字段
 const dbBarrage = "barrage"
-
+const keyBackground = "dou_ban_img"
 // 获取所有弹幕
 router.registerRouter("GET","",function(context){
     let db = database.newDb(dbBarrage)
@@ -64,6 +64,28 @@ router.registerRouter("POST","",function (context){
         })
     } else {
         router.response.ResponseBadRequest(context,"请检查颜色、内容、昵称是否填写并正确！")
+    }
+})
+
+// 注册豆瓣接口
+widget.addPage({
+    background: tools.getSetting(keyBackground),
+    file:"index.html",
+    headMeta: {
+        title: "弹幕留言墙",
+    },
+    css: ["element"],
+    script: ["vue","element","jquery"],
+    url: "",
+    full: false,
+    side: false
+},function (){
+    //获取一言
+    // setting.Talk = tools.HttpGet("https://v1.hitokoto.cn?c=a&c=b&c=c&c=d&c=e&c=f&c=g&c=h&c=i&c=j&c=k&c=l&encode=text")
+    let talk = ""
+    // 友链设置
+    return {
+        server: "/plugins/static/barrages"
     }
 })
 
