@@ -67,7 +67,7 @@ router.registerRouter("POST","",function (context){
     }
 })
 
-// 注册豆瓣接口
+// 注册界面
 widget.addPage({
     background: tools.getSetting(keyBackground),
     file:"index.html",
@@ -80,10 +80,7 @@ widget.addPage({
     full: false,
     side: false
 },function (){
-    //获取一言
-    // setting.Talk = tools.HttpGet("https://v1.hitokoto.cn?c=a&c=b&c=c&c=d&c=e&c=f&c=g&c=h&c=i&c=j&c=k&c=l&encode=text")
-    let talk = ""
-    // 友链设置
+    // 服务地址
     return {
         server: "/plugins/static/barrages"
     }
