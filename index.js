@@ -42,13 +42,15 @@ router.registerRouter("POST","",function (context){
         tools.verifyField(param.nickname) &&
         tools.verifyField(param.color)
     ){
+        // 过滤xss
+        param.content = tools.replaceXSS(param.content)
         // 设置需要插入的数据
         let data = {
             avatar: param.avatar,
             content: param.content,
             nickname: param.nickname,
             color: param.color,
-            send: new Date(),
+            send_time: new Date(),
         }
         // 插入数据
         let db = database.newDb(dbBarrage)
@@ -66,7 +68,7 @@ router.registerRouter("POST","",function (context){
         router.response.ResponseBadRequest(context,"请检查颜色、内容、昵称是否填写并正确！")
     }
 })
-
+widget.addSetting("弹幕留言墙",2,"barrages")
 // 注册界面
 widget.addPage({
     background: tools.getSetting(keyBackground),
@@ -86,6 +88,51 @@ widget.addPage({
     }
 })
 
+// 弹幕留言墙添加管理接口
+router.registerAdminRouter("GET","",function (context){
+    // 获取基本参数
+    let id = tools.str2int(context.Query('page'))
+    let size = tools.str2int(context.Query('page_size'))
+    let search = context.Query('search_type')
+    let key = context.Query('search_key')
+    if (id===0) { id=1 }
+    if (size===0) { size=10 }
+    // 设置关键词过滤
+    let filter = {}
+    if (search!=="" && key!==""){
+        filter[search] = database.regex(key)
+    }
+    // 开始搜索
+    let db = database.newDb(dbBarrage)
+    db.Paginate({filter,sort:{_id:-1}},id,size,function (err,page,total,data){
+        if (!err){
+            let response = {
+                total_num: total,
+                total: page,
+                current: id,
+                contents: []
+            }
+            data.forEach(function (item){
+                // tools.log(item.send_time)
+                response.contents.push({
+                    id: item._id,
+                    nickname: item.nickname,
+                    avatar: item.avatar,
+                    content: item.content,
+                    color: item.color,
+                    send: tools.time2String(new Date(item.send_time),true)
+                })
+            })
+            router.response.ResponseOk(context,response)
+        } else {
+            router.response.ResponseServerError(context)
+        }
+    })
+})
+// 删除友链
+router.registerAdminRouter("DELETE","/:id",function (context){
+    database.adminDeleteObject(context,dbBarrage,"_id")
+})
 
 
 
