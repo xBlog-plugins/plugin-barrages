@@ -129,7 +129,7 @@ router.registerAdminRouter("GET","",function (context){
         }
     })
 })
-// 删除友链
+// 删除弹幕
 router.registerAdminRouter("DELETE","/:id",function (context){
     database.adminDeleteObject(context,dbBarrage,"_id")
 })
